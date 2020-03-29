@@ -1,7 +1,9 @@
 package com.zql.zqlplayer
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.zql.zqlplayer.test.EGLTestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -10,8 +12,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Example of a call to a native method
-        sample_text.text = stringFromJNI()
+        btn_to_egl_test.setOnClickListener {
+            startActivity(Intent(applicationContext, EGLTestActivity::class.java))
+        }
     }
 
     /**
