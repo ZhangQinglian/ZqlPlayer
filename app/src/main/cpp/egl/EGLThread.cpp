@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <GLES2/gl2.h>
 #include "EGLThread.h"
-#include "EGLHelper.h"
 #include "../log/ZqlPlayerLog.h"
 
 EGLThread::EGLThread() {
@@ -19,34 +18,27 @@ EGLThread::~EGLThread() {
 void *eglThreadRunnable(void *context) {
     EGLThread *eglThread = static_cast<EGLThread *>(context);
     if (eglThread != NULL) {
-        eglThread->eglHelper = new EGLHelper();
-        eglThread->eglHelper->initEGL(eglThread->nativeWindow);
-
         eglThread->isExit = false;
         while (true) {
-            if (eglThread->isExit) {
-                eglThread->eglHelper->destroyEgl();
-                break;
-            }
             if (eglThread->isCreated) {
-                LOGD("eglthread call surface create")
+                eglThread->onCreatedCallback(eglThread->onCreatedCallbackCtx);
                 eglThread->isCreated = false;
             }
             if (eglThread->isChanged) {
-                LOGD("eglthread call surface changed, width = %d, height = %d",
-                     eglThread->surfaceWidth, eglThread->surfaceHeight)
-                glViewport(0, 0, eglThread->surfaceWidth, eglThread->surfaceHeight);
+
+                eglThread->onChangedCallback(eglThread->onChangeCallbackCtx,
+                                             eglThread->surfaceWidth, eglThread->surfaceHeight);
                 eglThread->isChanged = false;
                 eglThread->isDrawStart = true;
             }
 
             if (eglThread->isDrawStart) {
-                LOGD("draw");
-                glClearColor(0.0F, 1.0F, 0.0F, 1.0F);
-                glClear(GL_COLOR_BUFFER_BIT);
-                eglThread->eglHelper->swapBuffers();
+                eglThread->onDrawCallback(eglThread->onDrawCallbackCtx);
             }
-
+            if (eglThread->isExit) {
+                eglThread->onDestroyCallback(eglThread->onDestroyCallbackCtx);
+                break;
+            }
             //60 fps
             usleep(1000000 / 60);
         }
@@ -71,5 +63,25 @@ void EGLThread::onSurfaceChanged(int width, int height) {
 
 void EGLThread::onSurfaceDestroy() {
     isExit = true;
+}
+
+void EGLThread::setOnCreateCallback(EGLThread::OnCreatedCallback onCreateCallback, void *ctx) {
+    this->onCreatedCallback = onCreateCallback;
+    this->onCreatedCallbackCtx = ctx;
+}
+
+void EGLThread::setOnChangedCallback(EGLThread::OnChangedCallback onChangedCallback, void *ctx) {
+    this->onChangedCallback = onChangedCallback;
+    this->onChangeCallbackCtx = ctx;
+}
+
+void EGLThread::setOnDestroyCallback(EGLThread::OnDestroyCallback onDestroyCallback, void *ctx) {
+    this->onDestroyCallback = onDestroyCallback;
+    this->onDestroyCallbackCtx = ctx;
+}
+
+void EGLThread::setOnDrawCallback(EGLThread::OnDrawCallback onDrawCallback, void *ctx) {
+    this->onDrawCallback = onDrawCallback;
+    this->onDrawCallbackCtx = ctx;
 }
 
