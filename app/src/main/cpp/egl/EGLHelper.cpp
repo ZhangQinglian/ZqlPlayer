@@ -93,7 +93,7 @@ int EGLHelper::swapBuffers() {
     return -1;
 }
 
-void EGLHelper::destoryEgl() {
+void EGLHelper::destroyEgl() {
 
     if (mEglDisplay != EGL_NO_DISPLAY) {
         eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);

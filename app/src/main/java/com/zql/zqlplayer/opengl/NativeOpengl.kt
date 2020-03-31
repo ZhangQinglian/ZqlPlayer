@@ -8,5 +8,6 @@ import android.view.Surface
 public class NativeOpengl {
 
     external fun surfaceCreate(surface: Surface): Unit
-    external fun surfaceDestory()
+    external fun surfaceChanged(width: Int, height: Int)
+    external fun surfaceDestroy()
 }

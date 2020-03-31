@@ -31,11 +31,11 @@ class EglTestSurfaceView : SurfaceView, SurfaceHolder.Callback {
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-
+        nativeOpengl?.surfaceChanged(width, height)
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        nativeOpengl?.surfaceDestory()
+        nativeOpengl?.surfaceDestroy()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
