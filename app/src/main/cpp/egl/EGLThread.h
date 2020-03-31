@@ -9,6 +9,9 @@
 #include "egl/egl.h"
 #include "EGLHelper.h"
 
+#define OPENGL_RENDER_AUTO  1
+#define OPENGL_RENDER_MANUAL 2
+
 class EGLThread {
 
 public:
@@ -39,6 +42,10 @@ public:
     OnDrawCallback onDrawCallback;
     void *onDrawCallbackCtx;
 
+    int renderType = OPENGL_RENDER_AUTO;
+
+    pthread_mutex_t pthreadMutex;
+    pthread_cond_t pthreadCond;
 public:
     EGLThread();
 
@@ -57,6 +64,10 @@ public:
     void setOnDestroyCallback(OnDestroyCallback onDestroyCallback, void *ctx);
 
     void setOnDrawCallback(OnDrawCallback onDrawCallback,void *ctx);
+
+    void setRenderType(int renderType);
+
+    void notifyRender();
 };
 
 

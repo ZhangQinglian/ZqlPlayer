@@ -8,11 +8,13 @@
 #include "../log/ZqlPlayerLog.h"
 
 EGLThread::EGLThread() {
-
+    pthread_mutex_init(&pthreadMutex, NULL);
+    pthread_cond_init(&pthreadCond, NULL);
 }
 
 EGLThread::~EGLThread() {
-
+    pthread_mutex_destroy(&pthreadMutex);
+    pthread_cond_destroy(&pthreadCond);
 }
 
 void *eglThreadRunnable(void *context) {
@@ -39,8 +41,18 @@ void *eglThreadRunnable(void *context) {
                 eglThread->onDestroyCallback(eglThread->onDestroyCallbackCtx);
                 break;
             }
-            //60 fps
-            usleep(1000000 / 60);
+
+            if (eglThread->renderType == OPENGL_RENDER_AUTO) {
+                //60 fps
+                usleep(1000000 / 5);
+            } else {
+                pthread_mutex_lock(&eglThread->pthreadMutex);
+
+                pthread_cond_wait(&eglThread->pthreadCond, &eglThread->pthreadMutex);
+
+                pthread_mutex_unlock(&eglThread->pthreadMutex);
+            }
+
         }
     }
     return 0;
@@ -83,5 +95,15 @@ void EGLThread::setOnDestroyCallback(EGLThread::OnDestroyCallback onDestroyCallb
 void EGLThread::setOnDrawCallback(EGLThread::OnDrawCallback onDrawCallback, void *ctx) {
     this->onDrawCallback = onDrawCallback;
     this->onDrawCallbackCtx = ctx;
+}
+
+void EGLThread::setRenderType(int renderType) {
+    this->renderType = renderType;
+}
+
+void EGLThread::notifyRender() {
+    pthread_mutex_lock(&pthreadMutex);
+    pthread_cond_signal(&pthreadCond);
+    pthread_mutex_unlock(&pthreadMutex);
 }
 

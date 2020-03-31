@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <string>
+#include <random>
 #include "log/ZqlPlayerLog.h"
 #include "egl/EGLHelper.h"
 #include "android/native_window.h"
@@ -10,6 +11,9 @@
 ANativeWindow *nativeWindow = NULL;
 EGLThread *eglThread = NULL;
 EGLHelper *eglHelper;
+
+std::default_random_engine e;
+std::uniform_real_distribution<float> u(0, 1);
 
 void onSurfaceCreatedCallback(void *) {
     LOGD("eglthread call surface create")
@@ -30,7 +34,11 @@ void onSurfaceDestroyCallback(void *) {
 
 void onDrawCallback(void *) {
     LOGD("draw");
-    glClearColor(0.0F, 1.0F, 0.0F, 1.0F);
+
+    float read = u(e);
+    float green = u(e);
+    float blue = u(e);
+    glClearColor(read, green, blue, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT);
     eglHelper->swapBuffers();
 }
