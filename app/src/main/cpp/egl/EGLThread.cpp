@@ -71,6 +71,7 @@ void EGLThread::onSurfaceChanged(int width, int height) {
     isChanged = true;
     surfaceWidth = width;
     surfaceHeight = height;
+    notifyRender();
 }
 
 void EGLThread::onSurfaceDestroy() {

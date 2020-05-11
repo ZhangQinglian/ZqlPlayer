@@ -9,4 +9,6 @@ public class NativeOpengl {
     external fun surfaceCreate(surface: Surface): Unit
     external fun surfaceChanged(width: Int, height: Int)
     external fun surfaceDestroy()
+
+    external fun imgData(width: Int, height: Int, length: Int, data: ByteArray): Unit
 }
