@@ -5,6 +5,8 @@
 #ifndef ZQLPLAYER_MATRIXUTIL_H
 #define ZQLPLAYER_MATRIXUTIL_H
 
+#include <tgmath.h>
+
 static void initMatrix(float *matrix) {
     for (int i = 0; i < 16; i++) {
         if (i % 5 == 0) {
