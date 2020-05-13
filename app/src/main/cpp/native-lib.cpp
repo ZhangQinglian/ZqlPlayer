@@ -8,6 +8,7 @@
 #include "GLES2/gl2.h"
 #include "egl/EGLThread.h"
 #include "shaderutil/ShaderUtil.h"
+#include "matrix/MatrixUtil.h"
 
 ANativeWindow *nativeWindow = NULL;
 EGLThread *eglThread = NULL;
@@ -17,9 +18,10 @@ EGLHelper *eglHelper;
 const char *vertex = "attribute vec2 v_Position;\n"
                      "attribute vec2 f_Position;\n"
                      "varying vec2 ft_Position;\n"
+                     "uniform mat4 u_Matrix;\n"
                      "void main() {\n"
                      "    ft_Position = f_Position;\n"
-                     "    gl_Position = vec4(v_Position,1.0,1.0);\n"
+                     "    gl_Position = vec4(v_Position,1.0,1.0) * u_Matrix ;\n"
                      "}";
 const char *fragment = "precision mediump float;\n"
                        "varying vec2 ft_Position;\n"
@@ -33,7 +35,7 @@ GLint vPosition;
 GLint fPosition;
 GLint sTexture;
 GLuint textureId;
-
+GLint u_matrix;
 int w;
 int h;
 void *pixels = NULL;
@@ -51,6 +53,8 @@ float fragments[] = {
         0, 1,
         0, 0
 };
+
+float matrix[16];
 std::default_random_engine e;
 std::uniform_real_distribution<float> u(0, 1);
 
@@ -63,7 +67,12 @@ void onSurfaceCreatedCallback(void *) {
     vPosition = glGetAttribLocation(program, "v_Position"); //顶点坐标
     fPosition = glGetAttribLocation(program, "f_Position"); //纹理坐标
     sTexture = glGetUniformLocation(program, "sTexture"); //2D纹理
-
+    u_matrix = glGetUniformLocation(program, "u_Matrix");
+    initMatrix(matrix);
+    //rotationZMatrix(90, matrix); //旋转
+    //scaleMatrix(0.5, 0.7, 1, matrix); //缩放
+    //transMatrix(0.3, 0, 0, matrix); // 平移
+    //orthoM(-1, 1, -1, 1, matrix);
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -81,6 +90,18 @@ void onSurfaceChangedCallback(void *, int width, int height) {
     LOGD("eglthread call surface changed, width = %d, height = %d",
          eglThread->surfaceWidth, eglThread->surfaceHeight)
     glViewport(0, 0, eglThread->surfaceWidth, eglThread->surfaceHeight);
+
+    float screen_r = 1.0 * width / height;
+    if (w != 0 && h != 0) {
+        float picture_r = 1.0 * w / h;
+        if (screen_r > picture_r) { //图片宽度缩放
+            float r = width / (1.0 * height / h * w);
+            orthoM(-r, r, -1, 1, matrix);
+        } else { //图片高度缩放
+            float r = height / (1.0 * width / w * h);
+            orthoM(-1, 1, -r, r, matrix);
+        }
+    }
 }
 
 void onSurfaceDestroyCallback(void *) {
@@ -99,6 +120,8 @@ void onDrawCallback(void *) {
 
     if (program != 0) {
         glUseProgram(program);
+        glUniformMatrix4fv(u_matrix, 1, GL_FALSE, matrix);
+
 
         glActiveTexture(GL_TEXTURE5);
         glUniform1i(sTexture, 5);
