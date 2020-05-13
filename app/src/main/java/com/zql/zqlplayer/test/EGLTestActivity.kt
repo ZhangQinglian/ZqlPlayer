@@ -17,13 +17,6 @@ class EGLTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_e_g_l_test)
         surface_view.nativeOpengl = nativeOpengl
-
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.one_piece)
-        val buffer = ByteBuffer.allocate(bitmap.height * bitmap.width * 4)
-        bitmap.copyPixelsToBuffer(buffer)
-        buffer.flip()
-        val pixels = buffer.array()
-        nativeOpengl.imgData(bitmap.width, bitmap.height, pixels.size, pixels)
     }
 
 }

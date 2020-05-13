@@ -20,6 +20,9 @@ add_library( # Sets the name of the library.
         native-lib.cpp
         egl/EGLHelper.cpp
         egl/EGLThread.cpp
+        opengl/BaseOpengl.cpp
+        opengl/OpenglController.cpp
+        opengl/OpenglEnviromentTest.cpp
         shaderutil/ShaderUtil.h
         matrix/MatrixUtil.h
         )

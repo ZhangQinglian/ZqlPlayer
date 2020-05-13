@@ -20,6 +20,8 @@ EGLThread::~EGLThread() {
 void *eglThreadRunnable(void *context) {
     EGLThread *eglThread = static_cast<EGLThread *>(context);
     if (eglThread != NULL) {
+        EGLHelper *eglHelper = new EGLHelper();
+        eglHelper->initEGL(eglThread->nativeWindow);
         eglThread->isExit = false;
         while (true) {
             if (eglThread->isCreated) {
@@ -36,9 +38,12 @@ void *eglThreadRunnable(void *context) {
 
             if (eglThread->isDrawStart) {
                 eglThread->onDrawCallback(eglThread->onDrawCallbackCtx);
+                eglHelper->swapBuffers();
             }
             if (eglThread->isExit) {
-                eglThread->onDestroyCallback(eglThread->onDestroyCallbackCtx);
+                eglHelper->destroyEgl();
+                delete eglHelper;
+                eglHelper = NULL;
                 break;
             }
 
@@ -76,6 +81,11 @@ void EGLThread::onSurfaceChanged(int width, int height) {
 
 void EGLThread::onSurfaceDestroy() {
     isExit = true;
+    notifyRender();
+    pthread_join(eglThreadID, NULL);
+    nativeWindow = NULL;
+    eglThreadID = -1;
+    onDestroyCallback(onDestroyCallbackCtx);
 }
 
 void EGLThread::setOnCreateCallback(EGLThread::OnCreatedCallback onCreateCallback, void *ctx) {
