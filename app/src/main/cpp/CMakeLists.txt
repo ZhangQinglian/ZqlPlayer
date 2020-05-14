@@ -23,6 +23,7 @@ add_library( # Sets the name of the library.
         opengl/BaseOpengl.cpp
         opengl/OpenglController.cpp
         opengl/OpenglEnviromentTest.cpp
+        opengl/OpenglProgram1.cpp
         shaderutil/ShaderUtil.h
         matrix/MatrixUtil.h
         )

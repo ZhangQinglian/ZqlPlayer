@@ -21,6 +21,7 @@ public:
     bool isChanged = false;
     bool isExit = false;
     bool isDrawStart = false;
+    bool isFilterChanged = false;
 
     int surfaceWidth = 0;
     int surfaceHeight = 0;
@@ -33,6 +34,8 @@ public:
 
     typedef void(*OnDrawCallback)(void *onDrawCallbackCtx);
 
+    typedef void(*OnChangeFilterCallback)(int width, int height, void *);
+
     OnCreatedCallback onCreatedCallback;
     void *onCreatedCallbackCtx;
     OnChangedCallback onChangedCallback;
@@ -41,6 +44,9 @@ public:
     void *onDestroyCallbackCtx;
     OnDrawCallback onDrawCallback;
     void *onDrawCallbackCtx;
+    OnChangeFilterCallback onChangeFilterCallback;
+    void *onChangeFilterCallbackCtx;
+
 
     int renderType = OPENGL_RENDER_AUTO;
 
@@ -55,6 +61,8 @@ public:
 
     void onSurfaceChanged(int width, int height);
 
+    void onChangeFilter();
+
     void onSurfaceDestroy();
 
     void setOnCreateCallback(OnCreatedCallback onCreateCallback, void *ctx);
@@ -63,7 +71,9 @@ public:
 
     void setOnDestroyCallback(OnDestroyCallback onDestroyCallback, void *ctx);
 
-    void setOnDrawCallback(OnDrawCallback onDrawCallback,void *ctx);
+    void setOnDrawCallback(OnDrawCallback onDrawCallback, void *ctx);
+
+    void setOnChangeFilterCallback(OnChangeFilterCallback, void *);
 
     void setRenderType(int renderType);
 

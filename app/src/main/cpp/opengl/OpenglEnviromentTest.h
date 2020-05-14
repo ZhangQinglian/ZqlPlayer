@@ -35,6 +35,8 @@ public:
 
     void setMatrix(int width,int height);
 
+    void destroy() override;
+
     void setImage(void *data,int w, int h,int length) override;
 };
 

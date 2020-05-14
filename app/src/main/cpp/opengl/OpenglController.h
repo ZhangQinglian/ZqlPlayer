@@ -31,6 +31,7 @@ public:
 
     void onSurfaceDestroy();
 
+    void changeOpenglProgram();
     void setImage(void *data,int w,int h,int length);
 };
 

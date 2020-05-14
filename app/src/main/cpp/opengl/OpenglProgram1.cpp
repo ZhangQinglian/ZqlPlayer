@@ -1,13 +1,20 @@
 //
-// Created by Hari.Sheldon on 2020/5/13.
+// Created by Hari.Sheldon on 2020/5/14.
 //
 
 #include <random>
-#include "OpenglEnviromentTest.h"
+#include "OpenglProgram1.h"
 #include "../shaderutil/ShaderUtil.h"
 
-void OpenglEnviromentTest::onCreate() {
+OpenglProgram1::OpenglProgram1() {
 
+}
+
+OpenglProgram1::~OpenglProgram1() {
+
+}
+
+void OpenglProgram1::onCreate() {
     vertex = "attribute vec2 v_Position;\n"
              "attribute vec2 f_Position;\n"
              "varying vec2 ft_Position;\n"
@@ -20,7 +27,9 @@ void OpenglEnviromentTest::onCreate() {
                "varying vec2 ft_Position;\n"
                "uniform sampler2D sTexture;\n"
                "void main() {\n"
-               "    gl_FragColor=texture2D(sTexture, ft_Position);\n"
+               "lowp vec4 textureColor = texture2D(sTexture,ft_Position);\n"
+               "float gray = textureColor.r * 0.2125 + textureColor.g * 0.7154 + textureColor.b * 0.0721;\n"
+               "    gl_FragColor=vec4(gray,gray,gray,textureColor.w);\n"
                "}";
 
     LOGD("OpenglEnviromentTest call surface create")
@@ -42,13 +51,12 @@ void OpenglEnviromentTest::onCreate() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void OpenglEnviromentTest::onChanged(int width, int height) {
+void OpenglProgram1::onChanged(int width, int height) {
     BaseOpengl::onChanged(width, height);
     setMatrix(width, height);
 }
 
-void OpenglEnviromentTest::draw() {
-
+void OpenglProgram1::draw() {
     //绘制底色
     float read = u(e);
     float green = u(e);
@@ -82,16 +90,7 @@ void OpenglEnviromentTest::draw() {
     }
 }
 
-OpenglEnviromentTest::OpenglEnviromentTest() {
-
-}
-
-OpenglEnviromentTest::~OpenglEnviromentTest() {
-
-}
-
-void OpenglEnviromentTest::setMatrix(int width, int height) {
-
+void OpenglProgram1::setMatrix(int width, int height) {
     initMatrix(matrix);
     //rotationZMatrix(90, matrix); //旋转
     //scaleMatrix(0.5, 0.7, 1, matrix); //缩放
@@ -111,7 +110,7 @@ void OpenglEnviromentTest::setMatrix(int width, int height) {
     }
 }
 
-void OpenglEnviromentTest::setImage(void *data, int w, int h, int length) {
+void OpenglProgram1::setImage(void *data, int w, int h, int length) {
     this->pic_w = w;
     this->pic_h = h;
     this->pixels = data;
@@ -121,7 +120,7 @@ void OpenglEnviromentTest::setImage(void *data, int w, int h, int length) {
     }
 }
 
-void OpenglEnviromentTest::destroy() {
+void OpenglProgram1::destroy() {
     BaseOpengl::destroy();
     if (program > 0) {
         glDeleteProgram(program);
@@ -130,7 +129,7 @@ void OpenglEnviromentTest::destroy() {
         glDeleteTextures(1, &textureId);
     }
 
-    if(pixels != NULL){
+    if (pixels != NULL) {
         pixels = NULL;
     }
 }

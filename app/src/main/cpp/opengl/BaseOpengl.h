@@ -8,10 +8,12 @@
 
 #include <GLES2/gl2.h>
 #include <cstring>
+#include <random>
 #include "../log/ZqlPlayerLog.h"
 #include "../matrix/MatrixUtil.h"
 #include "../egl/EGLHelper.h"
-
+static std::default_random_engine e;
+static std::uniform_real_distribution<float> u(0, 1);
 class BaseOpengl {
 
 public:

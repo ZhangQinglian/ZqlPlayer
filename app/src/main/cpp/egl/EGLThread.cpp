@@ -25,22 +25,30 @@ void *eglThreadRunnable(void *context) {
         eglThread->isExit = false;
         while (true) {
             if (eglThread->isCreated) {
+                LOGD("egl thread : isCreated");
                 eglThread->onCreatedCallback(eglThread->onCreatedCallbackCtx);
                 eglThread->isCreated = false;
             }
             if (eglThread->isChanged) {
-
+                LOGD("egl thread : isChanged");
                 eglThread->onChangedCallback(eglThread->onChangeCallbackCtx,
                                              eglThread->surfaceWidth, eglThread->surfaceHeight);
                 eglThread->isChanged = false;
                 eglThread->isDrawStart = true;
             }
+            if (eglThread->isFilterChanged) {
+                eglThread->isFilterChanged = false;
+                eglThread->onChangeFilterCallback(eglThread->surfaceWidth, eglThread->surfaceHeight,
+                                                  eglThread->onChangeFilterCallbackCtx);
+            }
 
             if (eglThread->isDrawStart) {
+                LOGD("egl thread : isDrawStart");
                 eglThread->onDrawCallback(eglThread->onDrawCallbackCtx);
                 eglHelper->swapBuffers();
             }
             if (eglThread->isExit) {
+                LOGD("egl thread : isExit");
                 eglHelper->destroyEgl();
                 delete eglHelper;
                 eglHelper = NULL;
@@ -48,10 +56,12 @@ void *eglThreadRunnable(void *context) {
             }
 
             if (eglThread->renderType == OPENGL_RENDER_AUTO) {
+                LOGD("egl thread : sleep");
                 //60 fps
                 usleep(1000000 / 5);
             } else {
                 pthread_mutex_lock(&eglThread->pthreadMutex);
+                LOGD("egl thread : wait");
 
                 pthread_cond_wait(&eglThread->pthreadCond, &eglThread->pthreadMutex);
 
@@ -116,5 +126,15 @@ void EGLThread::notifyRender() {
     pthread_mutex_lock(&pthreadMutex);
     pthread_cond_signal(&pthreadCond);
     pthread_mutex_unlock(&pthreadMutex);
+}
+
+void EGLThread::setOnChangeFilterCallback(EGLThread::OnChangeFilterCallback callback, void *ctx) {
+    this->onChangeFilterCallback = callback;
+    this->onChangeFilterCallbackCtx = ctx;
+}
+
+void EGLThread::onChangeFilter() {
+    isFilterChanged = true;
+    notifyRender();
 }
 

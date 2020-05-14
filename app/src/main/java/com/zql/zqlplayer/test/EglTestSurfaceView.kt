@@ -35,6 +35,14 @@ class EglTestSurfaceView : SurfaceView, SurfaceHolder.Callback {
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
         nativeOpengl?.surfaceChanged(width, height)
+        holder?.surface?.let {
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.one_piece)
+            val buffer = ByteBuffer.allocate(bitmap.height * bitmap.width * 4)
+            bitmap.copyPixelsToBuffer(buffer)
+            buffer.flip()
+            val pixels = buffer.array()
+            nativeOpengl?.imgData(bitmap.width, bitmap.height, pixels.size, pixels)
+        }
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
@@ -44,12 +52,6 @@ class EglTestSurfaceView : SurfaceView, SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder?) {
         holder?.surface?.let {
             nativeOpengl?.surfaceCreate(it)
-            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.one_piece)
-            val buffer = ByteBuffer.allocate(bitmap.height * bitmap.width * 4)
-            bitmap.copyPixelsToBuffer(buffer)
-            buffer.flip()
-            val pixels = buffer.array()
-            nativeOpengl?.imgData(bitmap.width, bitmap.height, pixels.size, pixels)
         }
     }
 }

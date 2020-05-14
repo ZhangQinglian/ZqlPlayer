@@ -45,4 +45,10 @@ Java_com_zql_zqlplayer_opengl_NativeOpengl_imgData(JNIEnv *env, jobject thiz, ji
     }
     env->ReleaseByteArrayElements(data_, data, 0);
 
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_zql_zqlplayer_opengl_NativeOpengl_changeOpenglProgram(JNIEnv *env, jobject thiz) {
+    if(openglController != NULL){
+        openglController->changeOpenglProgram();
+    }
 }

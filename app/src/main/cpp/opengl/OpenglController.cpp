@@ -3,6 +3,7 @@
 //
 
 #include "OpenglController.h"
+#include "OpenglProgram1.h"
 
 OpenglController::OpenglController() {
 
@@ -32,6 +33,23 @@ void onSurfaceChangedCallback(void *ctx, int width, int height) {
     }
 }
 
+void onFilterChangeCallback(int w, int h, void *ctx) {
+    LOGD("Opengl Controller onFilterChangeCallback");
+    OpenglController *openglController = static_cast<OpenglController *>(ctx);
+    if (openglController != NULL) {
+        if (openglController->baseOpengl != NULL) {
+            openglController->baseOpengl->destroy();
+            delete openglController->baseOpengl;
+            openglController->baseOpengl = NULL;
+        }
+        openglController->baseOpengl = new OpenglProgram1();
+        openglController->baseOpengl->onCreate();
+        openglController->baseOpengl->onChanged(w, h);
+        openglController->baseOpengl->setImage(openglController->pixels, openglController->pic_w,
+                                               openglController->pic_h, -1);
+    }
+}
+
 void onSurfaceDestroyCallback(void *ctx) {
     LOGD("Opengl Controller onSurfaceDestroyCallback");
     OpenglController *openglController = static_cast<OpenglController *>(ctx);
@@ -54,8 +72,10 @@ void onDrawCallback(void *ctx) {
 void OpenglController::onSurfaceCreated(JNIEnv *env, jobject surface) {
     aNativeWindow = ANativeWindow_fromSurface(env, surface);
     eglThread = new EGLThread();
+    eglThread->setRenderType(OPENGL_RENDER_MANUAL);
     eglThread->setOnCreateCallback(onSurfaceCreatedCallback, this);
     eglThread->setOnChangedCallback(onSurfaceChangedCallback, this);
+    eglThread->setOnChangeFilterCallback(onFilterChangeCallback, this);
     eglThread->setOnDestroyCallback(onSurfaceDestroyCallback, this);
     eglThread->setOnDrawCallback(onDrawCallback, this);
 
@@ -94,6 +114,10 @@ void OpenglController::onSurfaceDestroy() {
         ANativeWindow_release(aNativeWindow);
         aNativeWindow = NULL;
     }
+
+    if (pixels != NULL) {
+        free(pixels);
+    }
 }
 
 void OpenglController::setImage(void *data, int w, int h, int length) {
@@ -103,8 +127,15 @@ void OpenglController::setImage(void *data, int w, int h, int length) {
     memcpy(pixels, data, length);
     if (baseOpengl != NULL) {
         baseOpengl->setImage(pixels, w, h, length);
+        LOGD("set image")
     }
     if (eglThread != NULL) {
         eglThread->notifyRender();
+    }
+}
+
+void OpenglController::changeOpenglProgram() {
+    if (eglThread != NULL) {
+        eglThread->onChangeFilter();
     }
 }
