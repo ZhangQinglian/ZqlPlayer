@@ -45,3 +45,6 @@ void BaseOpengl::destroy() {
 }
 
 void BaseOpengl::setImage(void *data,int w, int h,int length) {}
+
+void BaseOpengl::destroyImage() {
+}

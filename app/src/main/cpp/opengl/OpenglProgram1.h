@@ -37,6 +37,8 @@ public:
     void setImage(void *data, int w, int h, int length) override;
 
     void destroy() override;
+
+    void destroyImage() override;
 };
 
 #endif //ZQLPLAYER_OPENGLPROGRAM1_H

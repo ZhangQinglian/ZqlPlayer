@@ -28,6 +28,9 @@ public:
 
     GLuint program;
 
+    GLuint vShader;
+    GLuint fShader;
+
     float matrix[16];
 
     typedef void(*OnEglSwapBuffer)(void *ctx);
@@ -46,6 +49,8 @@ public:
     virtual void destroy();
 
     virtual void setImage(void *data,int w, int h,int length);
+
+    virtual void destroyImage();
 };
 
 

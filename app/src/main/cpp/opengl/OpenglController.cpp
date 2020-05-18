@@ -39,6 +39,7 @@ void onFilterChangeCallback(int w, int h, void *ctx) {
     if (openglController != NULL) {
         if (openglController->baseOpengl != NULL) {
             openglController->baseOpengl->destroy();
+            openglController->baseOpengl->destroyImage();
             delete openglController->baseOpengl;
             openglController->baseOpengl = NULL;
         }
@@ -105,7 +106,7 @@ void OpenglController::onSurfaceDestroy() {
     }
 
     if (baseOpengl != NULL) {
-        baseOpengl->destroy();
+        baseOpengl->destroyImage();
         delete baseOpengl;
         baseOpengl = NULL;
     }

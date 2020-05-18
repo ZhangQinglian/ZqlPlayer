@@ -14,7 +14,8 @@ static GLuint loadShaders(GLuint shaderType, const char *code) {
     return shader;
 }
 
-static GLuint createProgram(const char *vertex, const char *fragment) {
+static GLuint
+createProgram(const char *vertex, const char *fragment, GLuint *v_shader, GLuint *f_shader) {
     GLuint vertexShader = loadShaders(GL_VERTEX_SHADER, vertex);
     GLuint fragmentShader = loadShaders(GL_FRAGMENT_SHADER, fragment);
 
@@ -22,6 +23,9 @@ static GLuint createProgram(const char *vertex, const char *fragment) {
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
     glLinkProgram(program);
+
+    *v_shader = vertexShader;
+    *f_shader = fragmentShader;
     return program;
 }
 

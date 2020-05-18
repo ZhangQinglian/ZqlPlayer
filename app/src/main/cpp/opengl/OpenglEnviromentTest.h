@@ -38,6 +38,8 @@ public:
     void destroy() override;
 
     void setImage(void *data,int w, int h,int length) override;
+
+    void destroyImage() override;
 };
 
 

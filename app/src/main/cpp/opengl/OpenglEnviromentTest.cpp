@@ -25,7 +25,7 @@ void OpenglEnviromentTest::onCreate() {
 
     LOGD("OpenglEnviromentTest call surface create")
 
-    program = createProgram(vertex, fragment);
+    program = createProgram(vertex, fragment, &vShader, &fShader);
     LOGD("opengl shader program is %d", program);
     vPosition = glGetAttribLocation(program, "v_Position"); //顶点坐标
     fPosition = glGetAttribLocation(program, "f_Position"); //纹理坐标
@@ -122,15 +122,22 @@ void OpenglEnviromentTest::setImage(void *data, int w, int h, int length) {
 }
 
 void OpenglEnviromentTest::destroy() {
+    LOGD("OpenglEnviromentTest::destroy()");
     BaseOpengl::destroy();
+    glDeleteTextures(1, &textureId);
+
+    glDetachShader(program, vShader);
+    glDetachShader(program, fShader);
+    glDeleteShader(vShader);
+    glDeleteShader(fShader);
+
     if (program > 0) {
         glDeleteProgram(program);
     }
-    if (textureId > 0) {
-        glDeleteTextures(1, &textureId);
-    }
+}
 
-    if(pixels != NULL){
+void OpenglEnviromentTest::destroyImage() {
+    if (pixels != NULL) {
         pixels = NULL;
     }
 }

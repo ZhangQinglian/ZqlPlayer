@@ -49,6 +49,7 @@ void *eglThreadRunnable(void *context) {
             }
             if (eglThread->isExit) {
                 LOGD("egl thread : isExit");
+                eglThread->onDestroyCallback(eglThread->onDestroyCallbackCtx);
                 eglHelper->destroyEgl();
                 delete eglHelper;
                 eglHelper = NULL;
@@ -95,7 +96,6 @@ void EGLThread::onSurfaceDestroy() {
     pthread_join(eglThreadID, NULL);
     nativeWindow = NULL;
     eglThreadID = -1;
-    onDestroyCallback(onDestroyCallbackCtx);
 }
 
 void EGLThread::setOnCreateCallback(EGLThread::OnCreatedCallback onCreateCallback, void *ctx) {
