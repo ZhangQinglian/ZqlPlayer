@@ -6,7 +6,7 @@
 #define ZQLPLAYER_EGLTHREAD_H
 
 #include "pthread.h"
-#include "egl/egl.h"
+#include "EGL/egl.h"
 #include "EGLHelper.h"
 
 #define OPENGL_RENDER_AUTO  1

@@ -1,1 +1,2 @@
+include ':zqlplayer'
 include ':app'
