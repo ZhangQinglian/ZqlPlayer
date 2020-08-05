@@ -6,7 +6,7 @@
 
 #include "android/log.h"
 
-#define LOGD(FORMAT, ...) __android_log_print(ANDROID_LOG_DEBUG,"scott",FORMAT, ##__VA_ARGS__);
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"scott",FORMAT, ##__VA_ARGS__);
+#define LOGD(FORMAT, ...) __android_log_print(ANDROID_LOG_DEBUG,"zqlplayer",FORMAT, ##__VA_ARGS__);
+#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"zqlplayer",FORMAT, ##__VA_ARGS__);
 
 #endif //ZQLPLAYER_ZQLPLAYERLOG_H
