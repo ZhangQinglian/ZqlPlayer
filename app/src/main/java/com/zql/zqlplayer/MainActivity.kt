@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
 import com.zql.zqlplayer.test.EGLTestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         }
         val layoutManager = LinearLayoutManager(
             this,
-             LinearLayoutManager.VERTICAL,
+            LinearLayoutManager.VERTICAL,
             false
         )
         menu_list.adapter = adapter
@@ -63,8 +63,8 @@ class MainActivity : AppCompatActivity() {
         var menuCallback: MenuCallback? = null
         override fun onCreateViewHolder(view: ViewGroup, position: Int): MenuHolder {
 
-            val view = LayoutInflater.from(view.context).inflate(R.layout.item_menu, view, false)
-            return MenuHolder(view, menuCallback)
+            val itemView = LayoutInflater.from(view.context).inflate(R.layout.item_menu, view, false)
+            return MenuHolder(itemView, menuCallback)
         }
 
         override fun getItemCount(): Int = menus.size
@@ -76,16 +76,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     class MenuHolder(view: View, private val callback: MenuListAdapter.MenuCallback?) :
-
         RecyclerView.ViewHolder(view) {
 
         fun bind(menuText: String) {
-            itemView.findViewById<TextView>(R.id.menu_text)?.apply {
+            itemView.findViewById<Button>(R.id.menu_text)?.apply {
                 text = menuText
-            }
-            itemView.setOnClickListener {
-                callback?.onMenuClick(adapterPosition)
-
+                setOnClickListener {
+                    callback?.onMenuClick(adapterPosition)
+                }
             }
         }
     }
