@@ -1,7 +1,7 @@
 package com.zql.zqlplayer.test
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.zql.zqlplayer.R
 import com.zql.zqlplayer.opengl.NativeOpengl
 

@@ -2,11 +2,11 @@ package com.zql.zqlplayer
 
 import android.Manifest
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +34,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(
+            this,
+             LinearLayoutManager.VERTICAL,
+            false
+        )
         menu_list.adapter = adapter
         menu_list.layoutManager = layoutManager
         adapter.notifyDataSetChanged()
